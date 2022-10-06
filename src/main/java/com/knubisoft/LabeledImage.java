@@ -3,9 +3,9 @@ package com.knubisoft;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.spark.ml.linalg.Vector;
-import org.apache.spark.ml.linalg.Vectors;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.spark.mllib.linalg.Vector;
+import org.apache.spark.mllib.linalg.Vectors;
 
 import java.io.Serializable;
 import java.util.ArrayList;

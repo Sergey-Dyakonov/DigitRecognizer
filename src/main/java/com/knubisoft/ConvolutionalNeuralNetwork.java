@@ -72,7 +72,7 @@ public class ConvolutionalNeuralNetwork {
                 updater(new Nesterovs(LEARNING_RATE, 0.9)).
                 optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT).
 //                l2(LEARNING_RATE).
-                list().
+        list().
                 layer(0, new ConvolutionLayer.Builder(5, 5).
                         nIn(INP_CHANNELS).
                         stride(1, 1).
@@ -122,6 +122,8 @@ public class ConvolutionalNeuralNetwork {
                 build();
         EarlyStoppingTrainer trainer = new EarlyStoppingTrainer(esConf, conf, mnistTrain);
         EarlyStoppingResult<MultiLayerNetwork> res = trainer.fit();
+        trainedModel = res.getBestModel();
+        trainedModel.save(new File(MODEL_PATH), true);
 
         System.out.println(res.getTerminationReason());
         System.out.println(res.getTerminationDetails());
