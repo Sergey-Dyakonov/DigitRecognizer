@@ -1,6 +1,15 @@
 package com.knubisoft;
 
 import lombok.SneakyThrows;
+import org.datavec.api.io.labels.ParentPathLabelGenerator;
+import org.datavec.image.recordreader.ImageRecordReader;
+import org.datavec.image.transform.ImageTransform;
+import org.datavec.image.transform.MultiImageTransform;
+import org.datavec.image.transform.ShowImageTransform;
+import org.deeplearning4j.core.storage.StatsStorage;
+import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator;
+import org.deeplearning4j.datasets.iterator.FloatsDataSetIterator;
+import org.deeplearning4j.datasets.iterator.INDArrayDataSetIterator;
 import org.deeplearning4j.datasets.iterator.impl.MnistDataSetIterator;
 import org.deeplearning4j.earlystopping.EarlyStoppingConfiguration;
 import org.deeplearning4j.earlystopping.EarlyStoppingResult;
@@ -17,13 +26,21 @@ import org.deeplearning4j.nn.conf.inputs.InputType;
 import org.deeplearning4j.nn.conf.layers.*;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
+import org.deeplearning4j.ui.api.UIServer;
+import org.deeplearning4j.ui.model.stats.StatsListener;
+import org.deeplearning4j.ui.model.storage.FileStatsStorage;
 import org.deeplearning4j.util.ModelSerializer;
+import org.nd4j.common.primitives.Pair;
 import org.nd4j.linalg.activations.Activation;
+import org.nd4j.linalg.api.buffer.DataType;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.learning.config.Nesterovs;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
+import java.awt.*;
 import java.io.File;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
@@ -54,13 +71,14 @@ public class ConvolutionalNeuralNetwork {
     public int predict(LabeledImage img) {
         double[] pixels = img.getPixels();
         Arrays.stream(pixels).forEach(pixel -> pixel /= 255);
-        return trainedModel.predict(Nd4j.create(pixels))[0];
+        INDArray indArray = Nd4j.create(pixels).reshape(1, pixels.length);
+        System.out.println(trainedModel.output(indArray));
+        return trainedModel.predict(indArray)[0];
     }
 
     @SneakyThrows
     public void train(int trainDataSize, int testDataSize) {
         System.out.println("Data loading...");
-//        DataSetIterator mnistTrain = new MnistDataSetIterator(BATCH_SIZE, trainDataSize, false, true, true, SEED);
         DataSetIterator mnistTrain = new MnistDataSetIterator(BATCH_SIZE, true, SEED);
         DataSetIterator mnistTest = new MnistDataSetIterator(BATCH_SIZE, false, SEED);
 
@@ -71,8 +89,7 @@ public class ConvolutionalNeuralNetwork {
                 weightInit(WeightInit.XAVIER).
                 updater(new Nesterovs(LEARNING_RATE, 0.9)).
                 optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT).
-//                l2(LEARNING_RATE).
-        list().
+                list().
                 layer(0, new ConvolutionLayer.Builder(5, 5).
                         nIn(INP_CHANNELS).
                         stride(1, 1).

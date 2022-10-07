@@ -17,7 +17,7 @@ public class DrawArea extends JComponent {
     private Image image;
     @Setter
     @Getter
-    private int STROKE_WIDTH = 10;
+    private int strokeWidth = 10;
     private Graphics2D g2;
     private int curX, curY, oldX, oldY;
 
@@ -45,7 +45,7 @@ public class DrawArea extends JComponent {
                 curY = e.getY();
 
                 if (g2 != null) {
-                    g2.setStroke(new BasicStroke(STROKE_WIDTH));
+                    g2.setStroke(new BasicStroke(strokeWidth));
                     g2.drawLine(oldX, oldY, curX, curY);
                     repaint();
                     oldX = curX;
