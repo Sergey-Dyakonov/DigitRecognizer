@@ -10,15 +10,15 @@ import java.util.concurrent.Executors;
 
 public class Main {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(Main.class);
-    private static JFrame mainFrame = new JFrame();
+    private final static Logger LOG = LoggerFactory.getLogger(Main.class);
+    private static final JFrame mainFrame = new JFrame();
 
     public static void main(String[] args) {
-
+        LOG.info("Application running");
         ProgressBar progressBar = new ProgressBar(mainFrame, true);
         progressBar.showProgressBar("Collecting data this make take several seconds!");
         UI ui = new UI();
-        Executors.newCachedThreadPool().submit(()->{
+        Executors.newCachedThreadPool().submit(() -> {
             try {
                 ui.initUI();
             } finally {

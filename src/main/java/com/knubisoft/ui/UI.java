@@ -1,9 +1,8 @@
 package com.knubisoft.ui;
 
 import com.knubisoft.ConvolutionalNeuralNetwork;
+import com.knubisoft.ImageProcessorUtil;
 import com.knubisoft.LabeledImage;
-import com.mortennobel.imagescaling.ResampleFilters;
-import com.mortennobel.imagescaling.ResampleOp;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,10 +124,10 @@ public class UI {
         JButton recognize = new JButton("Recognize digit");
         recognize.addActionListener(e -> {
             Image drawImage = drawArea.getImage();
-            BufferedImage sbi = toBufferedImage(drawImage);
-            Image scaled = scale(sbi);
-            BufferedImage scaledBuffered = toBufferedImage(scaled);
-            double[] scaledPixels = transformImageToOneDimensionalVector(scaledBuffered);
+            BufferedImage sbi = ImageProcessorUtil.toBufferedImage(drawImage);
+            Image scaled = ImageProcessorUtil.scale(sbi);
+            BufferedImage scaledBuffered = ImageProcessorUtil.toBufferedImage(scaled);
+            double[] scaledPixels = ImageProcessorUtil.toVector(scaledBuffered);
             LabeledImage labeledImage = new LabeledImage(0, scaledPixels);
 
             convolutionalNeuralNetwork.init();
@@ -151,33 +150,5 @@ public class UI {
         actionPanel.add(recognize);
         actionPanel.add(clear);
         drawAndDigitPredictionPanel.add(actionPanel);
-    }
-
-    private double[] transformImageToOneDimensionalVector(BufferedImage img) {
-        int width = img.getWidth();
-        int height = img.getHeight();
-        double[] imgGray = new double[width * height];
-        int index = 0;
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                Color color = new Color(img.getRGB(j, i), true);
-                imgGray[index++] = 255 - (color.getRed() + color.getGreen() + color.getBlue()) / 3d;
-            }
-        }
-        return imgGray;
-    }
-
-    private BufferedImage toBufferedImage(Image img) {
-        BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D graphics = bimage.createGraphics();
-        graphics.drawImage(img, 0, 0, null);
-        graphics.dispose();
-        return bimage;
-    }
-
-    private Image scale(BufferedImage imgToScale) {
-        ResampleOp resize = new ResampleOp(28, 28);
-        resize.setFilter(ResampleFilters.getLanczos3Filter());
-        return resize.filter(imgToScale, null);
     }
 }
