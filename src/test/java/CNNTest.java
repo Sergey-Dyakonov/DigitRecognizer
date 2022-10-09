@@ -1,8 +1,7 @@
-import com.knubisoft.ConvolutionalNeuralNetwork;
-import com.knubisoft.ImageProcessorUtil;
-import com.knubisoft.LabeledImage;
+import com.knubisoft.cnn.ConvolutionalNeuralNetwork;
+import com.knubisoft.cnn.LabeledImage;
+import com.knubisoft.utils.ImageProcessorUtil;
 import lombok.SneakyThrows;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -42,13 +41,12 @@ public class CNNTest {
         assertEquals(expected, predicted, "Failed to recognize digit from test images!");
     }
 
-    @NotNull
     @SneakyThrows
     private LabeledImage prepareLabeledImage(File imageFile) {
         BufferedImage image = ImageIO.read(imageFile);
         Image scaled = ImageProcessorUtil.scale(image);
         BufferedImage scaledBuffered = ImageProcessorUtil.toBufferedImage(scaled);
         double[] scaledPixels = ImageProcessorUtil.toVector(scaledBuffered);
-        return new LabeledImage(0, scaledPixels);
+        return new LabeledImage(scaledPixels);
     }
 }

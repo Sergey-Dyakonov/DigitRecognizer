@@ -1,11 +1,10 @@
 package com.knubisoft.ui;
 
-import com.knubisoft.ConvolutionalNeuralNetwork;
-import com.knubisoft.ImageProcessorUtil;
-import com.knubisoft.LabeledImage;
+import com.knubisoft.cnn.ConvolutionalNeuralNetwork;
+import com.knubisoft.utils.ImageProcessorUtil;
+import com.knubisoft.cnn.LabeledImage;
+import freemarker.log.Logger;
 import lombok.SneakyThrows;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
@@ -15,8 +14,11 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.Executors;
 
+/**
+ * Class for creating and providing GUI
+ */
 public class UI {
-    private final static Logger LOG = LoggerFactory.getLogger(UI.class);
+    private final static Logger LOG = Logger.getLogger(UI.class.getName());
     private final static int WIDTH = 1200;
     private final static int HEIGHT = 600;
     private final static int TRAIN_SIZE = 30_000;
@@ -28,8 +30,6 @@ public class UI {
     private JPanel drawAndDigitPredictionPanel;
     private JSpinner trainField;
     private final Font sansSerifBold = new Font("SansSerif", Font.BOLD, 18);
-    private SpinnerNumberModel modelTestSize;
-    private SpinnerNumberModel modelTrainSize;
     private JSpinner testField;
     private JPanel resultPanel;
 
@@ -41,12 +41,15 @@ public class UI {
         convolutionalNeuralNetwork.init();
     }
 
+    /**
+     * Initiate GUI and adds all necessary elements
+     */
     public void initUI() {
         mainFrame = createMainFrame();
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
-        addTopPanel();
+        addTrainPanel();
 
         drawAndDigitPredictionPanel = new JPanel(new GridLayout());
         addActionPanel();
@@ -57,11 +60,14 @@ public class UI {
         mainFrame.setVisible(true);
     }
 
-    private void addTopPanel() {
+    /**
+     * Creates and adds to main frame panel with spinners to specify amount of data for model training
+     */
+    private void addTrainPanel() {
         JPanel topPanel = new JPanel(new FlowLayout());
         JButton train = new JButton("Train");
         train.addActionListener(e -> {
-            if (JOptionPane.showConfirmDialog(mainFrame, "Are you sure, training reqiures >10GB memory and more than 1 hour?") == JOptionPane.OK_OPTION) {
+            if (JOptionPane.showConfirmDialog(mainFrame, "Are you sure, training may take a long time?") == JOptionPane.OK_OPTION) {
                 ProgressBar bar = new ProgressBar(mainFrame);
                 SwingUtilities.invokeLater(() -> bar.showProgressBar("Training may take a while..."));
                 Executors.newCachedThreadPool().submit(() -> {
@@ -72,20 +78,20 @@ public class UI {
                 });
             }
         });
-
         topPanel.add(train);
+
         JLabel trainLbl = new JLabel("Training data");
         trainLbl.setFont(sansSerifBold);
         topPanel.add(trainLbl);
-        modelTrainSize = new SpinnerNumberModel(TRAIN_SIZE, 10_000, 60_000, 1000);
+        SpinnerNumberModel modelTrainSize = new SpinnerNumberModel(TRAIN_SIZE, 10_000, 60_000, 1000);
         trainField = new JSpinner(modelTrainSize);
         trainField.setFont(sansSerifBold);
         topPanel.add(trainField);
 
-        JLabel testLbl = new JLabel("Test data");
+        JLabel testLbl = new JLabel("Testing data");
         testLbl.setFont(sansSerifBold);
         topPanel.add(trainLbl);
-        modelTestSize = new SpinnerNumberModel(TEST_SIZE, 1000, 10_000, 500);
+        SpinnerNumberModel modelTestSize = new SpinnerNumberModel(TEST_SIZE, 1000, 10_000, 500);
         testField = new JSpinner(modelTestSize);
         testField.setFont(sansSerifBold);
         topPanel.add(testField);
@@ -93,6 +99,11 @@ public class UI {
         mainPanel.add(topPanel, BorderLayout.NORTH);
     }
 
+    /**
+     * Creates and establishes main frame of the app
+     *
+     * @return JFrame main frame
+     */
     private JFrame createMainFrame() {
         JFrame mainFrame = new JFrame();
         mainFrame.setTitle("Digit Recognizer");
@@ -106,20 +117,27 @@ public class UI {
             }
         });
 
-//        ImageIcon imageIcon = new ImageIcon("icon.png");
-//        mainFrame.setIconImage(imageIcon.getImage());
+        ImageIcon imageIcon = new ImageIcon("src/main/resources/icon.png");
+        mainFrame.setIconImage(imageIcon.getImage());
 
         return mainFrame;
     }
 
+    /**
+     * Adds panel with canvas for drawing and panel for predicted value output
+     */
     private void addDrawAreaAndPredictionArea() {
         drawArea = new DrawArea();
         drawAndDigitPredictionPanel.add(drawArea);
+
         resultPanel = new JPanel();
         resultPanel.setLayout(new GridLayout());
         drawAndDigitPredictionPanel.add(resultPanel);
     }
 
+    /**
+     * Creates and adds to the main frame panel with buttons for interacting with CNN
+     */
     private void addActionPanel() {
         JButton recognize = new JButton("Recognize digit");
         recognize.addActionListener(e -> {
@@ -128,27 +146,31 @@ public class UI {
             Image scaled = ImageProcessorUtil.scale(sbi);
             BufferedImage scaledBuffered = ImageProcessorUtil.toBufferedImage(scaled);
             double[] scaledPixels = ImageProcessorUtil.toVector(scaledBuffered);
-            LabeledImage labeledImage = new LabeledImage(0, scaledPixels);
+            LabeledImage labeledImage = new LabeledImage(scaledPixels);
 
-            convolutionalNeuralNetwork.init();
             int predict = convolutionalNeuralNetwork.predict(labeledImage);
-
             JLabel prediction = new JLabel(String.valueOf(predict));
             prediction.setForeground(Color.red);
-            prediction.setFont(new Font("SansSerif", Font.BOLD, 128));
+            prediction.setFont(new Font("SansSerif", Font.BOLD, 256));
+
             resultPanel.removeAll();
             resultPanel.add(prediction);
             resultPanel.updateUI();
         });
+
         JButton clear = new JButton("Clear");
         clear.addActionListener(e -> {
             drawArea.setImage(null);
             drawArea.repaint();
             drawAndDigitPredictionPanel.updateUI();
+
+            resultPanel.removeAll();
+            resultPanel.updateUI();
         });
-        JPanel actionPanel = new JPanel(new GridLayout(8, 1));
-        actionPanel.add(recognize);
-        actionPanel.add(clear);
-        drawAndDigitPredictionPanel.add(actionPanel);
+
+        JPanel buttonsPanel = new JPanel(new GridLayout(1, 2));
+        buttonsPanel.add(recognize);
+        buttonsPanel.add(clear);
+        mainPanel.add(buttonsPanel, BorderLayout.SOUTH);
     }
 }

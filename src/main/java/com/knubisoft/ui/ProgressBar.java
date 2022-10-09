@@ -3,6 +3,9 @@ package com.knubisoft.ui;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Progress bar to show internal processes running during app execution
+ */
 public class ProgressBar {
     private final JFrame mainFrame;
     private JProgressBar progressBar;
@@ -19,6 +22,12 @@ public class ProgressBar {
         this.undecorated = undecorated;
     }
 
+
+    /**
+     * Shows progress bar with passed message
+     *
+     * @param msg String to show in progress bar
+     */
     public void showProgressBar(String msg) {
         SwingUtilities.invokeLater(() -> {
             if (undecorated) {
@@ -39,8 +48,12 @@ public class ProgressBar {
         });
     }
 
-    public void setVisible(boolean visible){
-        progressBar.setVisible(visible);
+    /**
+     * Changes ProgressBar visibility according to passed value
+     * @param isVisible Boolean value to set visibility (true - visible, false - not visible)
+     */
+    public void setVisible(boolean isVisible){
+        progressBar.setVisible(isVisible);
     }
 
     private JProgressBar createProgressBar(JFrame mainFrame) {

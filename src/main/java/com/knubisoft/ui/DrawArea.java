@@ -10,8 +10,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 
+/**
+ * Canvas for getting mouse pointer input
+ */
 public class DrawArea extends JComponent {
-    private final Font sansSerifBold = new Font("SansSerif", Font.BOLD, 18);
     @Getter
     @Setter
     private Image image;
@@ -21,15 +23,20 @@ public class DrawArea extends JComponent {
     private Graphics2D g2;
     private int curX, curY, oldX, oldY;
 
+    /**
+     * Creates area for drawing (canvas) with border and tip
+     */
     public DrawArea() {
         setDoubleBuffered(false);
+
         setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEtchedBorder(),
                 "Please, draw a digit",
                 TitledBorder.LEFT,
                 TitledBorder.TOP,
-                sansSerifBold,
+                new Font("SansSerif", Font.BOLD, 18),
                 Color.blue));
+
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -55,6 +62,11 @@ public class DrawArea extends JComponent {
         });
     }
 
+    /**
+     * Converts graphical data from the canvas to Image
+     *
+     * @param g the <code>Graphics</code> object to protect
+     */
     @Override
     protected void paintComponent(Graphics g) {
         if (image == null) {
@@ -67,6 +79,9 @@ public class DrawArea extends JComponent {
         g.drawImage(image, 0, 0, null);
     }
 
+    /**
+     * Clears canvas
+     */
     private void clear() {
         g2.setPaint(Color.white);
         g2.fillRect(0, 0, getSize().width, getSize().height);

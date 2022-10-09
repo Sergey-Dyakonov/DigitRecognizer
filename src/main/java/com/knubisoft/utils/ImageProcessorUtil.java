@@ -1,4 +1,4 @@
-package com.knubisoft;
+package com.knubisoft.utils;
 
 import com.mortennobel.imagescaling.ResampleFilters;
 import com.mortennobel.imagescaling.ResampleOp;
@@ -6,6 +6,9 @@ import com.mortennobel.imagescaling.ResampleOp;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+/**
+ * Provides operations for image processing for CNN
+ */
 public class ImageProcessorUtil {
     /**
      * Converts a given Image into a BufferedImage
