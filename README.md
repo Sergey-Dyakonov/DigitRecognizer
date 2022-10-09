@@ -17,7 +17,7 @@ The project is kinda "Hello, world!" application in neural network programming. 
 
 ## How to install and run
 #### Simple way to install and run application: 
-Download **RunMe.jar** and run it (double click or using console `java -jar RunMe.jar`)
+Download [**RunMe.jar**](https://drive.google.com/file/d/1xDjabq2cocN10saV70EkI-ETrMfyR9pJ/view?usp=sharing) and run it (double click or using console `java -jar RunMe.jar`)
 
 #### Using Intellij IDEA
 1. Download the project (you can do it in several ways, but I'd recommend to use `git copy`)
