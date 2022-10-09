@@ -32,7 +32,7 @@ Download **RunMe.jar** and run it (double click or using console `java -jar RunM
 
 ## How to use
 ***Note:*** _the CNN doesn't provide 100% accuracy, so prediction mistakes happen_
-1. [Run](## How to install and run) the app
+1. [Run](https://github.com/Sergey-Dyakonov/DigitRecognizer/blob/master/README.md#how-to-install-and-run) the app
 2. Draw a digit in special area
 3. Press "Recognize digit"
 4. Observe the result
