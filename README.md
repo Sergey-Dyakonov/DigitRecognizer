@@ -16,8 +16,6 @@ The project is kinda "Hello, world!" application in neural network programming. 
 - [Digit recognizer](https://github.com/klevis/DigitRecognizer)
 
 ## How to install and run
-
----
 #### Simple way to install and run application: 
 Download **RunMe.jar** and run it (double click or using console `java -jar RunMe.jar`)
 
@@ -33,8 +31,6 @@ Download **RunMe.jar** and run it (double click or using console `java -jar RunM
 2. `java -jar target/DigitRecognizer-1.0-SNAPSHOT-shaded.jar`
 
 ## How to use
-
----
 ***Note:*** _the CNN doesn't provide 100% accuracy, so prediction mistakes happen_
 1. [Run](##How to install and run) the app
 2. Draw a digit in special area
@@ -45,19 +41,13 @@ Download **RunMe.jar** and run it (double click or using console `java -jar RunM
 **If you prefer to train model by yourself or change it, specify required data amount with spinners and press "Train". It may take a while. The speed of training depends on your machine characteristics. After training finishing the new model will be saved on your computer and used for digit recognition. Trying specifying different amounts of data you can observe accuracy changing.**
 
 ## App in work
-
----
 ![img_1.png](img_1.png)
 ![img_2.png](img_2.png)
 
 ## App testing
-
----
 There are simple test in the project to test neural network model. There are samples of digits drawn in this app in *.png* format. Trained model makes correct predictions about them. You can use it for testing your model.
 
 ## Future improvements
-
----
 Future improvements may include:
 - Adding functionality for specify what processor to use for training: GPU or CPU
 - Changing progress bar during neural network (NN) training to represent actual progress of the training (depending on epochs, accuracy and so on), not only just "NN is being trained now"
